@@ -1,6 +1,32 @@
 # STABL.FUN — лендинг
 
+**Живая ссылка (превью для заказчика):** https://provnuk88.github.io/stabl-landing/
+
 Статика. Ни сборки, ни зависимостей — папку можно класть на любой хостинг как есть.
+
+## Про превью-ссылку
+
+Раздаётся с GitHub Pages из **публичного** репозитория `provnuk88/stabl-landing` — на бесплатном тарифе Pages иначе не работает. Значит исходники видны всем, у кого есть ссылка на репозиторий.
+
+Снести целиком:
+
+```bash
+gh repo delete provnuk88/stabl-landing --yes
+```
+
+Обновить после правок:
+
+```bash
+cd E:\stabl\landing
+git add -A && git commit -m "..." && git push
+# Pages пересобирается за минуту
+```
+
+**Перед боевым запуском обязательно снять:**
+- `<meta name="robots" content="noindex, nofollow">` в `index.html`
+- `Disallow: /` в `robots.txt`
+- вернуть `<link rel="canonical" href="https://stabl.fun/">`
+- переписать `og:url`, `og:image`, `twitter:image` с github.io на stabl.fun
 
 ## Локально
 
