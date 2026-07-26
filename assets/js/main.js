@@ -20,16 +20,18 @@
   function initMasthead() {
     const bar = document.querySelector('.masthead');
     if (!bar) return;
-    let stuck = false, ticking = false;
+    let stuck = false, ticking = 0;
 
     const check = () => {
       const should = scrollY > 40;
       if (should !== stuck) { bar.classList.toggle('is-stuck', should); stuck = should; }
     };
+    // Re-armed on every scroll rather than gated by a flag: a boolean latch
+    // sticks forever if its frame never renders (backgrounded tab, throttled
+    // frame) and the handler goes deaf.
     addEventListener('scroll', () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => { ticking = false; check(); });
+      if (ticking) cancelAnimationFrame(ticking);
+      ticking = requestAnimationFrame(() => { ticking = 0; check(); });
     }, { passive: true });
     check();
   }
@@ -207,16 +209,15 @@
       if (poster) poster.style.transform = `scale(${s})`;
     }
 
-    let ticking = false;
+    let raf = 0;
 
     function onScroll() {
       const rect = hero.getBoundingClientRect();
       const span = hero.offsetHeight - stage.clientHeight;
       const p    = span > 0 ? clamp(-rect.top / span, 0, 1) : 0;
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        ticking = false;
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        raf = 0;
         priceIt(p); handOver(p); paintCrowd(p); frameIt(p);
       });
     }
